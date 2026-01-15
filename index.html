@@ -1,0 +1,404 @@
+import React, { useState } from 'react';
+import { X, Circle } from 'lucide-react';
+
+const QuizGame = () => {
+  const categories = [
+    'Sports', 'Music', 'Famous People', 'Cities', 
+    'Countries', 'English Language', 'History', 'Movies', 'Science'
+  ];
+
+  const questions = {
+    'Sports': [
+      { q: "Which country won the FIFA World Cup in 2018?", options: ["Brazil", "Germany", "France", "Argentina"], correct: 2 },
+      { q: "How many players are on a basketball team on the court?", options: ["4", "5", "6", "7"], correct: 1 },
+      { q: "In which sport would you perform a 'slam dunk'?", options: ["Volleyball", "Basketball", "Tennis", "Baseball"], correct: 1 },
+      { q: "What is the maximum break in snooker?", options: ["147", "180", "200", "150"], correct: 0 },
+      { q: "How many Grand Slam tennis tournaments are there?", options: ["3", "4", "5", "6"], correct: 1 },
+      { q: "What colour is the 'yellow card' in football?", options: ["Red", "Yellow", "Green", "Blue"], correct: 1 },
+      { q: "How long is an Olympic swimming pool?", options: ["25m", "50m", "75m", "100m"], correct: 1 },
+      { q: "In boxing, what does TKO stand for?", options: ["Total Knock Out", "Technical Knock Out", "Tactical Knock Out", "Time Knock Out"], correct: 1 }
+    ],
+    'Music': [
+      { q: "Who is known as the 'King of Pop'?", options: ["Elvis Presley", "Michael Jackson", "Prince", "Freddie Mercury"], correct: 1 },
+      { q: "Which instrument has 88 keys?", options: ["Organ", "Accordion", "Piano", "Synthesizer"], correct: 2 },
+      { q: "What does 'BPM' stand for in music?", options: ["Beats Per Minute", "Bass Per Measure", "Band Performance Music", "Beat Production Mode"], correct: 0 },
+      { q: "Which band sang 'Bohemian Rhapsody'?", options: ["The Beatles", "Queen", "Led Zeppelin", "Pink Floyd"], correct: 1 },
+      { q: "How many strings does a standard guitar have?", options: ["4", "5", "6", "7"], correct: 2 },
+      { q: "What is the lowest female singing voice?", options: ["Soprano", "Mezzo-soprano", "Alto", "Contralto"], correct: 3 },
+      { q: "Which pop star's real name is Stefani Germanotta?", options: ["Madonna", "Lady Gaga", "Beyoncé", "Rihanna"], correct: 1 },
+      { q: "In which city did the Beatles form?", options: ["London", "Manchester", "Liverpool", "Birmingham"], correct: 2 }
+    ],
+    'Famous People': [
+      { q: "Who painted the Mona Lisa?", options: ["Picasso", "Van Gogh", "Leonardo da Vinci", "Michelangelo"], correct: 2 },
+      { q: "Who wrote 'Romeo and Juliet'?", options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"], correct: 1 },
+      { q: "Who was the first person to walk on the moon?", options: ["Buzz Aldrin", "Neil Armstrong", "Yuri Gagarin", "John Glenn"], correct: 1 },
+      { q: "Who is known for the theory of relativity?", options: ["Isaac Newton", "Albert Einstein", "Stephen Hawking", "Galileo"], correct: 1 },
+      { q: "Who wrote the Harry Potter series?", options: ["J.R.R. Tolkien", "C.S. Lewis", "J.K. Rowling", "Roald Dahl"], correct: 2 },
+      { q: "Who is known as the father of modern physics?", options: ["Marie Curie", "Albert Einstein", "Isaac Newton", "Nikola Tesla"], correct: 2 },
+      { q: "Who co-founded Microsoft?", options: ["Steve Jobs", "Mark Zuckerberg", "Bill Gates", "Elon Musk"], correct: 2 },
+      { q: "Who painted the Sistine Chapel ceiling?", options: ["Leonardo da Vinci", "Raphael", "Michelangelo", "Donatello"], correct: 2 }
+    ],
+    'Cities': [
+      { q: "Which city is known as the 'Big Apple'?", options: ["Los Angeles", "Chicago", "New York", "Boston"], correct: 2 },
+      { q: "What is the capital of Australia?", options: ["Sydney", "Melbourne", "Canberra", "Brisbane"], correct: 2 },
+      { q: "In which city is the Eiffel Tower?", options: ["London", "Paris", "Rome", "Berlin"], correct: 1 },
+      { q: "Which city hosted the 2016 Summer Olympics?", options: ["London", "Beijing", "Rio de Janeiro", "Tokyo"], correct: 2 },
+      { q: "What is the largest city in Canada?", options: ["Vancouver", "Montreal", "Toronto", "Ottawa"], correct: 2 },
+      { q: "In which city would you find the Colosseum?", options: ["Athens", "Rome", "Cairo", "Istanbul"], correct: 1 },
+      { q: "What is the capital of Spain?", options: ["Barcelona", "Madrid", "Seville", "Valencia"], correct: 1 },
+      { q: "Which city is known as the 'City of Love'?", options: ["Venice", "Paris", "Rome", "Vienna"], correct: 1 }
+    ],
+    'Countries': [
+      { q: "Which country has the largest population?", options: ["India", "China", "USA", "Indonesia"], correct: 0 },
+      { q: "In which country would you find the pyramids of Giza?", options: ["Mexico", "Egypt", "Peru", "Sudan"], correct: 1 },
+      { q: "What is the smallest country in the world?", options: ["Monaco", "Vatican City", "San Marino", "Liechtenstein"], correct: 1 },
+      { q: "Which country is shaped like a boot?", options: ["Greece", "Spain", "Italy", "Portugal"], correct: 2 },
+      { q: "What is the largest country by area?", options: ["Canada", "USA", "China", "Russia"], correct: 3 },
+      { q: "Which country invented pizza?", options: ["Greece", "Italy", "France", "Spain"], correct: 1 },
+      { q: "In which country is Mount Everest?", options: ["India", "China", "Nepal", "Tibet"], correct: 2 },
+      { q: "Which country has the most islands?", options: ["Philippines", "Indonesia", "Sweden", "Japan"], correct: 2 }
+    ],
+    'English Language': [
+      { q: "Which sentence is correct?", options: ["I have saw him yesterday", "I seen him yesterday", "I saw him yesterday", "I has seen him yesterday"], correct: 2 },
+      { q: "Which word is a synonym for 'happy'?", options: ["Sad", "Joyful", "Angry", "Tired"], correct: 1 },
+      { q: "What type of word is 'quickly'?", options: ["Noun", "Verb", "Adjective", "Adverb"], correct: 3 },
+      { q: "Which is the correct spelling?", options: ["Accomodation", "Accommodation", "Acommodation", "Acomodation"], correct: 1 },
+      { q: "Complete: 'If I ____ rich, I would travel the world.'", options: ["am", "was", "were", "be"], correct: 2 },
+      { q: "What is the superlative form of 'good'?", options: ["Gooder", "More good", "Best", "Better"], correct: 2 },
+      { q: "Which word means 'to make something better'?", options: ["Worsen", "Improve", "Destroy", "Ignore"], correct: 1 },
+      { q: "Which preposition: 'I'm good ___ maths'?", options: ["in", "at", "on", "for"], correct: 1 }
+    ],
+    'History': [
+      { q: "World War II ended in which decade?", options: ["1930s", "1940s", "1950s", "1960s"], correct: 1 },
+      { q: "Who was the first President of the USA?", options: ["Abraham Lincoln", "George Washington", "Thomas Jefferson", "John Adams"], correct: 1 },
+      { q: "The Titanic sank in which ocean?", options: ["Pacific", "Atlantic", "Indian", "Arctic"], correct: 1 },
+      { q: "Which explorer is credited with reaching America in the 15th century?", options: ["Marco Polo", "Christopher Columbus", "Vasco da Gama", "Ferdinand Magellan"], correct: 1 },
+      { q: "Which country launched the first satellite into space?", options: ["USA", "Soviet Union", "China", "UK"], correct: 1 },
+      { q: "The Berlin Wall separated which city?", options: ["Paris", "Berlin", "London", "Rome"], correct: 1 },
+      { q: "Which ancient civilization built the pyramids?", options: ["Romans", "Greeks", "Egyptians", "Aztecs"], correct: 2 },
+      { q: "Who was the famous queen of ancient Egypt?", options: ["Nefertiti", "Cleopatra", "Hatshepsut", "Isis"], correct: 1 }
+    ],
+    'Movies': [
+      { q: "Which movie won Best Picture at the 2020 Oscars?", options: ["1917", "Joker", "Parasite", "Once Upon a Time in Hollywood"], correct: 2 },
+      { q: "Who directed 'Jurassic Park'?", options: ["James Cameron", "Steven Spielberg", "George Lucas", "Peter Jackson"], correct: 1 },
+      { q: "What is the highest-grossing film of all time?", options: ["Titanic", "Avatar", "Avengers: Endgame", "Star Wars"], correct: 1 },
+      { q: "In which film would you hear 'May the Force be with you'?", options: ["Star Trek", "Star Wars", "Guardians of the Galaxy", "The Matrix"], correct: 1 },
+      { q: "Who played Jack in Titanic?", options: ["Brad Pitt", "Leonardo DiCaprio", "Tom Cruise", "Matt Damon"], correct: 1 },
+      { q: "What year was the first Harry Potter film released?", options: ["1999", "2000", "2001", "2002"], correct: 2 },
+      { q: "Who voiced Woody in Toy Story?", options: ["Tom Hanks", "Tim Allen", "Robin Williams", "Billy Crystal"], correct: 0 },
+      { q: "Which film features the character Forrest Gump?", options: ["The Green Mile", "Saving Private Ryan", "Forrest Gump", "Cast Away"], correct: 2 }
+    ],
+    'Science': [
+      { q: "What is the chemical symbol for gold?", options: ["Go", "Gd", "Au", "Ag"], correct: 2 },
+      { q: "How many planets are in our solar system?", options: ["7", "8", "9", "10"], correct: 1 },
+      { q: "What is the speed of light?", options: ["300,000 km/s", "150,000 km/s", "500,000 km/s", "100,000 km/s"], correct: 0 },
+      { q: "What is H2O commonly known as?", options: ["Oxygen", "Hydrogen", "Water", "Carbon Dioxide"], correct: 2 },
+      { q: "How many bones are in the human body?", options: ["196", "206", "216", "226"], correct: 1 },
+      { q: "What is the largest organ in the human body?", options: ["Heart", "Brain", "Liver", "Skin"], correct: 3 },
+      { q: "What gas do plants absorb from the atmosphere?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], correct: 2 },
+      { q: "What is the centre of an atom called?", options: ["Electron", "Proton", "Neutron", "Nucleus"], correct: 3 }
+    ]
+  };
+
+  const [board, setBoard] = useState(Array(9).fill(null));
+  const [currentPlayer, setCurrentPlayer] = useState('X');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedSquare, setSelectedSquare] = useState(null);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [showResult, setShowResult] = useState(false);
+  const [winner, setWinner] = useState(null);
+  const [scores, setScores] = useState({ O: 0, X: 0 });
+
+  const checkWinner = (newBoard) => {
+    const lines = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    for (let line of lines) {
+      const [a, b, c] = line;
+      if (newBoard[a] && newBoard[a] === newBoard[b] && newBoard[a] === newBoard[c]) {
+        return newBoard[a];
+      }
+    }
+    return null;
+  };
+
+  const openModal = (index) => {
+    if (board[index] || winner) return;
+    
+    const category = categories[index];
+    const categoryQuestions = questions[category];
+    
+    // Always pick a random question from the category
+    const randomQuestion = categoryQuestions[Math.floor(Math.random() * categoryQuestions.length)];
+    const questionIndex = categoryQuestions.indexOf(randomQuestion);
+    
+    setSelectedSquare(index);
+    setCurrentQuestion({ ...randomQuestion, category, originalIndex: questionIndex });
+    setSelectedAnswer(null);
+    setShowResult(false);
+    setModalOpen(true);
+  };
+
+  const handleAnswerClick = (answerIndex) => {
+    if (showResult) return;
+    setSelectedAnswer(answerIndex);
+    setShowResult(true);
+
+    const isCorrect = answerIndex === currentQuestion.correct;
+    
+    if (isCorrect) {
+      setTimeout(() => {
+        const newBoard = [...board];
+        newBoard[selectedSquare] = currentPlayer;
+        setBoard(newBoard);
+
+        const gameWinner = checkWinner(newBoard);
+        if (gameWinner) {
+          setWinner(gameWinner);
+          setScores(prev => ({ ...prev, [gameWinner]: prev[gameWinner] + 1 }));
+        }
+
+        setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
+        setModalOpen(false);
+      }, 1500);
+    } else {
+      setTimeout(() => {
+        setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
+        setModalOpen(false);
+      }, 1500);
+    }
+  };
+
+  const resetGame = () => {
+    setBoard(Array(9).fill(null));
+    setCurrentPlayer('X');
+    setWinner(null);
+  };
+
+  return (
+    <div className="h-screen flex flex-col items-center justify-center p-3 font-sans text-white overflow-hidden" style={{
+      background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)'
+    }}>
+      <div className="max-w-6xl w-full h-full flex flex-col justify-center">
+        {/* Header */}
+        <div className="text-center mb-3">
+          <h1 className="font-bold mb-0.5" style={{
+            fontSize: '22px',
+            background: 'linear-gradient(135deg, #C9A961 0%, #D4B76E 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            letterSpacing: '-0.02em'
+          }}>
+            INTUITY
+          </h1>
+          <p className="text-gray-400 uppercase tracking-wider mb-2" style={{ fontSize: '9px' }}>Naughts & Crosses Quiz · by Majid Nashtai</p>
+        </div>
+
+        {/* Combined Score Display and Current Player */}
+        <div className="flex items-center justify-between w-full max-w-5xl mx-auto mb-3 px-8">
+          {/* Naughts Score (Left) */}
+          <div className="flex items-center gap-2">
+            <Circle className="w-5 h-5" style={{ color: '#C9A961' }} strokeWidth={2.5} />
+            <span className="text-2xl font-bold" style={{ color: '#C9A961' }}>{scores.O}</span>
+          </div>
+
+          {/* Current Player (Center) */}
+          <div className="flex items-center gap-2">
+            <span className="text-gray-400 text-xs uppercase tracking-wider">Current Player</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{
+              background: 'rgba(30, 41, 59, 0.5)',
+              backdropFilter: 'blur(24px)',
+              border: '1px solid rgba(71, 85, 105, 0.5)'
+            }}>
+              {currentPlayer === 'X' ? (
+                <X className="w-5 h-5" style={{ color: '#60a5fa' }} strokeWidth={3} />
+              ) : (
+                <Circle className="w-5 h-5" style={{ color: '#C9A961' }} strokeWidth={3} />
+              )}
+              <span className="font-bold text-base">{currentPlayer}</span>
+            </div>
+          </div>
+
+          {/* Crosses Score (Right) */}
+          <div className="flex items-center gap-2">
+            <span className="text-2xl font-bold" style={{ color: '#60a5fa' }}>{scores.X}</span>
+            <X className="w-5 h-5" style={{ color: '#60a5fa' }} strokeWidth={2.5} />
+          </div>
+        </div>
+
+        {/* Winner Banner */}
+        {winner && (
+          <div className="mb-3 p-3 rounded-xl text-center" style={{
+            background: 'rgba(30, 41, 59, 0.5)',
+            backdropFilter: 'blur(24px)',
+            border: '2px solid #C9A961'
+          }}>
+            <p className="text-xl font-bold mb-2" style={{ color: '#C9A961' }}>
+              🎉 Player {winner} Wins! 🎉
+            </p>
+            <button 
+              onClick={resetGame}
+              className="px-5 py-2 font-semibold rounded-lg transition-all text-sm"
+              style={{
+                background: 'linear-gradient(135deg, #C9A961 0%, #D4B76E 100%)',
+                color: 'white',
+                boxShadow: '0 4px 12px rgba(201, 169, 97, 0.3)'
+              }}
+            >
+              ↻ Play Again
+            </button>
+          </div>
+        )}
+
+        {/* Game Board */}
+        <div className="grid grid-cols-3 gap-2 max-w-3xl mx-auto mb-2">
+          {board.map((cell, index) => (
+            <div
+              key={index}
+              onClick={() => openModal(index)}
+              className="cursor-pointer rounded-xl transition-all"
+              style={{
+                background: 'rgba(30, 41, 59, 0.5)',
+                backdropFilter: 'blur(24px)',
+                border: '2px solid rgba(71, 85, 105, 0.5)',
+                pointerEvents: cell || winner ? 'none' : 'auto',
+                opacity: cell || winner ? 0.7 : 1,
+                aspectRatio: '1',
+                minHeight: '160px',
+                minWidth: '160px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={(e) => {
+                if (!cell && !winner) {
+                  e.currentTarget.style.borderColor = 'rgba(201, 169, 97, 0.6)';
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!cell && !winner) {
+                  e.currentTarget.style.borderColor = 'rgba(71, 85, 105, 0.5)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }
+              }}
+            >
+              {!cell && (
+                <>
+                  <div className="text-5xl font-bold mb-1" style={{ color: 'rgba(201, 169, 97, 0.4)' }}>
+                    {index + 1}
+                  </div>
+                  <div className="text-[0.65rem] text-center px-2" style={{ color: '#64748b' }}>
+                    {categories[index]}
+                  </div>
+                </>
+              )}
+              {cell === 'X' && <X className="w-20 h-20" style={{ color: '#60a5fa' }} strokeWidth={3} />}
+              {cell === 'O' && <Circle className="w-20 h-20" style={{ color: '#C9A961' }} strokeWidth={3} />}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Modal */}
+      {modalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{
+          background: 'rgba(0, 0, 0, 0.9)',
+          backdropFilter: 'blur(10px)'
+        }}>
+          <div className="rounded-2xl p-8 max-w-2xl w-full" style={{
+            background: 'rgba(30, 41, 59, 0.98)',
+            backdropFilter: 'blur(60px)',
+            border: '2px solid rgba(201, 169, 97, 0.4)',
+            boxShadow: '0 20px 80px rgba(0, 0, 0, 0.8)'
+          }}>
+            {/* Category Badge */}
+            <div className="text-center mb-6">
+              <span className="inline-block px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wider" style={{
+                background: 'rgba(201, 169, 97, 0.2)',
+                border: '1px solid #C9A961',
+                color: '#D4B76E'
+              }}>
+                {currentQuestion.category}
+              </span>
+            </div>
+
+            {/* Question */}
+            <h2 className="text-2xl font-bold text-white mb-8 text-center leading-relaxed">
+              {currentQuestion.q}
+            </h2>
+
+            {/* Answer Options */}
+            <div className="space-y-3 mb-6">
+              {currentQuestion.options.map((option, index) => {
+                let bgColor = 'rgba(51, 65, 85, 0.5)';
+                let borderColor = 'rgba(71, 85, 105, 0.5)';
+                let textColor = '#e2e8f0';
+
+                if (showResult) {
+                  if (index === currentQuestion.correct) {
+                    bgColor = 'rgba(34, 197, 94, 0.2)';
+                    borderColor = '#22c55e';
+                    textColor = '#86efac';
+                  } else if (index === selectedAnswer) {
+                    bgColor = 'rgba(239, 68, 68, 0.2)';
+                    borderColor = '#ef4444';
+                    textColor = '#fca5a5';
+                  }
+                }
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handleAnswerClick(index)}
+                    disabled={showResult}
+                    className="w-full p-4 rounded-xl font-medium text-lg text-left transition-all disabled:cursor-not-allowed"
+                    style={{
+                      background: bgColor,
+                      border: `2px solid ${borderColor}`,
+                      color: textColor
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!showResult) {
+                        e.currentTarget.style.background = 'rgba(71, 85, 105, 0.7)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!showResult) {
+                        e.currentTarget.style.background = bgColor;
+                      }
+                    }}
+                  >
+                    {String.fromCharCode(65 + index)}. {option}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Result Message */}
+            {showResult && (
+              <div className="text-center">
+                {selectedAnswer === currentQuestion.correct ? (
+                  <p className="font-bold text-xl" style={{ color: '#86efac' }}>
+                    ✓ Correct! Your mark is placed.
+                  </p>
+                ) : (
+                  <p className="font-bold text-xl" style={{ color: '#fca5a5' }}>
+                    ✗ Wrong answer. Next player's turn.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default QuizGame;
